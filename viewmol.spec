@@ -1,7 +1,6 @@
 %define name 	viewmol
 %define version 2.4.1
-%define release %mkrel 5
-
+%define release %mkrel 6
 
 Summary: 	Molecule viewer and editor
 Name: 		%name
@@ -14,7 +13,7 @@ BuildRoot: 	%_tmppath/%name-%version-buildroot
 Source: 	%name-%version.src.tar.bz2
 BuildRequires: 	libtiff-devel libMesaGLU-devel libpython-devel
 BuildRequires: 	libx11-devel x11-proto-devel libxt-devel libxi-devel libxmu-devel
-BuildRequires:  lesstif-devel libpng-devel
+BuildRequires:  lesstif-devel png-devel
 
 %description
 Viewmol is a graphical front end for computational chemistry programs.
@@ -71,14 +70,19 @@ chmod 755 $RPM_BUILD_ROOT/%_libdir/viewmol/Linux/*
 chmod 755 $RPM_BUILD_ROOT/%_bindir/*
 
 # menu
-install -d $RPM_BUILD_ROOT%{_menudir}
-cat << EOF > $RPM_BUILD_ROOT%{_menudir}/%{name}
-?package(%{name}):command="viewmol"\
-needs="x11"\
-section="Applications/Sciences/Chemistry"\
-title="ViewMol"\
-icon="chemistry_section.png"\
-longtitle="GUI Interface for Chemistry Software"
+
+mkdir -p %{buildroot}%{_datadir}/applications
+cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}.desktop <<EOF
+[Desktop Entry]
+Encoding=UTF-8
+Name=ViewMol
+Comment=GUI interface for chemistry software
+Exec=%{_bindir}/%{name} 
+Icon=chemistry_section.png
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Motif;Education;Science;Chemistry;
 EOF
 
 %post 
@@ -95,6 +99,5 @@ rm -fr %buildroot
 %doc %_docdir/%name-%version
 %_bindir/%name
 %_libdir/%name
-%_menudir/%name
-
+%_datadir/applications/mandriva-%name.desktop
 
