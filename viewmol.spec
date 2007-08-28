@@ -74,7 +74,6 @@ chmod 755 $RPM_BUILD_ROOT/%_bindir/*
 mkdir -p %{buildroot}%{_datadir}/applications
 cat > %{buildroot}%{_datadir}/applications/mandriva-%{name}.desktop <<EOF
 [Desktop Entry]
-Encoding=UTF-8
 Name=ViewMol
 Comment=GUI interface for chemistry software
 Exec=%{_bindir}/%{name} 
