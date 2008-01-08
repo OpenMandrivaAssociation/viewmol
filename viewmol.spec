@@ -11,7 +11,7 @@ Group: 		Sciences/Chemistry
 URL: 		http://viewmol.sourceforge.net
 BuildRoot: 	%_tmppath/%name-%version-buildroot
 Source: 	%name-%version.src.tar.bz2
-BuildRequires: 	libtiff-devel libMesaGLU-devel libpython-devel
+BuildRequires: 	libtiff-devel mesaglu-devel libpython-devel
 BuildRequires: 	libx11-devel x11-proto-devel libxt-devel libxi-devel libxmu-devel
 BuildRequires:  lesstif-devel png-devel
 
