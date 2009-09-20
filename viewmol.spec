@@ -1,6 +1,6 @@
 %define name 	viewmol
 %define version 2.4.1
-%define release %mkrel 9
+%define release %mkrel 10
 
 Summary: 	Molecule viewer and editor
 Name: 		%name
