@@ -1,16 +1,18 @@
 %define name 	viewmol
 %define version 2.4.1
-%define release %mkrel 10
+%define release %mkrel 11
 
 Summary: 	Molecule viewer and editor
 Name: 		%name
 Version: 	%version
 Release: 	%release
-License: 	GPL
+License: 	GPLv2
 Group: 		Sciences/Chemistry
 URL: 		http://viewmol.sourceforge.net
 BuildRoot: 	%_tmppath/%name-%version-buildroot
 Source: 	%name-%version.src.tar.bz2
+Patch0:		viewmol-2.4.1-prevent-app-defaults-file-install.patch
+Patch1:		viewmol-2.4.1-mdv-fix-str-fmt.patch
 BuildRequires: 	libtiff-devel mesaglu-devel libpython-devel
 BuildRequires: 	libx11-devel x11-proto-devel libxt-devel libxi-devel libxmu-devel
 BuildRequires:  lesstif-devel png-devel
@@ -24,6 +26,8 @@ Mopac, and Turbomole outputs as well as for PDB files.
 
 %prep
 %setup -q -n %name-%version
+%patch0 -p1
+%patch1 -p1 -b .strfmt
 cd source
 #tar xfj %{SOURCE}
 perl -p -i -e 's!usr/local/lib!%_libdir!g' getrc.c
