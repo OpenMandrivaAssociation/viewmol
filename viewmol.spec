@@ -1,21 +1,18 @@
-%define name 	viewmol
-%define version 2.4.1
-%define release %mkrel 12
-
 Summary: 	Molecule viewer and editor
-Name: 		%name
-Version: 	%version
-Release: 	%release
+Name: 		viewmol
+Version: 	2.4.1
+Release: 	13
 License: 	GPLv2
 Group: 		Sciences/Chemistry
 URL: 		http://viewmol.sourceforge.net
-BuildRoot: 	%_tmppath/%name-%version-buildroot
-Source: 	%name-%version.src.tar.bz2
+Source0: 	%name-%version.src.tar.bz2
 Patch0:		viewmol-2.4.1-prevent-app-defaults-file-install.patch
 Patch1:		viewmol-2.4.1-mdv-fix-str-fmt.patch
-BuildRequires: 	libtiff-devel mesaglu-devel libpython-devel
-BuildRequires: 	libx11-devel x11-proto-devel libxt-devel libxi-devel libxmu-devel
+BuildRequires: 	libtiff-devel mesaglu-devel
+BuildRequires: 	x11-proto-devel libxt-devel libxi-devel libxmu-devel
 BuildRequires:  lesstif-devel png-devel
+BuildRequires:  pkgconfig(x11)
+BuildRequires:  python-devel
 
 %description
 Viewmol is a graphical front end for computational chemistry programs.
@@ -25,7 +22,7 @@ includes input filters for Discover, DMol, Gamess, Gaussian 9x, Gulp,
 Mopac, and Turbomole outputs as well as for PDB files.
 
 %prep
-%setup -q -n %name-%version
+%setup -q
 %patch0 -p1
 %patch1 -p1 -b .strfmt
 cd source
@@ -41,8 +38,8 @@ echo "TIFFINCLUDE = /usr/include" >> .config.Linux
 echo "MESALIB = -L/usr/%_lib" >> .config.Linux
 echo "MESAINCLUDE = /usr/include/GL" >> .config.Linux
 #echo "PYTHONVERSION = %pythonver" >> .config.Linux
-echo "PYTHONINCLUDE = /usr/include/python%pyver" >> .config.Linux
-echo "LIBPYTHON = -L%_libdir/python%pyver" >> .config.Linux
+echo "PYTHONINCLUDE = /usr/include/python%py_ver" >> .config.Linux
+echo "LIBPYTHON = -L%_libdir/python%py_ver" >> .config.Linux
 cd Linux
 cat ../.config.Linux > makefile
 echo 'COMPILER = gcc' >> makefile
@@ -52,7 +49,7 @@ echo 'LDFLAGS=' >> makefile
 echo 'SCANDIR=' >> makefile
 echo 'INCLUDE=$(MESAINCLUDE) -I$(TIFFINCLUDE) -I$(PYTHONINCLUDE)' >> makefile
 echo 'LIBRARY=$(MESALIB) $(LIBPYTHON)' >> makefile
-echo 'LIBS=-L/usr/%_lib -lpython%pyver -ltiff -lGLU -lGL -lpng -lXm -lXmu -lXt -lX11 -lXi' >> makefile
+echo 'LIBS=-L/usr/%_lib -lpython%py_ver -ltiff -lGLU -lGL -lpng -lXm -lXmu -lXt -lX11 -lXi -lm' >> makefile
 cat ../Makefile >> makefile
 make viewmol_
 make tm_
@@ -63,15 +60,14 @@ make readmopac_
 make readpdb_
 
 %install
-rm -Rf $RPM_BUILD_ROOT
 cd source
-./install $RPM_BUILD_ROOT%_prefix
-mkdir -p $RPM_BUILD_ROOT%_docdir
-mkdir -p $RPM_BUILD_ROOT%_docdir/%name-%version
-mv $RPM_BUILD_ROOT/%_libdir/viewmol/doc/* $RPM_BUILD_ROOT%_docdir/%name-%version
-rmdir $RPM_BUILD_ROOT/%_libdir/viewmol/doc
-chmod 755 $RPM_BUILD_ROOT/%_libdir/viewmol/Linux/*
-chmod 755 $RPM_BUILD_ROOT/%_bindir/*
+./install %{buildroot}%_prefix
+mkdir -p %{buildroot}%_docdir
+mkdir -p %{buildroot}%_docdir/%name-%version
+mv %{buildroot}/%_libdir/viewmol/doc/* %{buildroot}%_docdir/%name-%version
+rmdir %{buildroot}/%_libdir/viewmol/doc
+chmod 755 %{buildroot}/%_libdir/viewmol/Linux/*
+chmod 755 %{buildroot}/%_bindir/*
 
 # menu
 
@@ -88,23 +84,69 @@ StartupNotify=true
 Categories=Motif;Education;Science;Chemistry;
 EOF
 
-%if %mdkversion < 200900
-%post 
-%update_menus
-%endif
-
-%if %mdkversion < 200900
-%postun
-%clean_menus
-%endif
-
-%clean
-rm -fr %buildroot
-
 %files
-%defattr(-,root,root,0755)
 %doc %_docdir/%name-%version
 %_bindir/%name
 %_libdir/%name
 %_datadir/applications/mandriva-%name.desktop
+
+
+
+%changelog
+* Fri Nov 05 2010 Paulo Andrade <pcpa@mandriva.com.br> 2.4.1-12mdv2011.0
++ Revision: 593541
+- Add patch to initialize python environment
+- Rebuild for python 2.7
+
+* Tue Feb 02 2010 Jérôme Brenier <incubusss@mandriva.org> 2.4.1-11mdv2010.1
++ Revision: 499627
+- fix str fmt
+- prevent app-defaults file install
+- fix License tag
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - rebuild
+
+* Sun Aug 03 2008 Thierry Vignaud <tv@mandriva.org> 2.4.1-9mdv2009.1
++ Revision: 261851
+- rebuild
+
+* Wed Jul 30 2008 Thierry Vignaud <tv@mandriva.org> 2.4.1-8mdv2009.0
++ Revision: 255524
+- rebuild
+
+  + Pixel <pixel@mandriva.com>
+    - rpm filetriggers deprecates update_menus/update_scrollkeeper/update_mime_database/update_icon_cache/update_desktop_database/post_install_gconf_schemas
+
+* Tue Jan 08 2008 Thierry Vignaud <tv@mandriva.org> 2.4.1-6mdv2008.1
++ Revision: 146731
+- fix mesaglu-devel BR
+- kill re-definition of %%buildroot on Pixel's request
+- kill explicit icon extension
+- kill desktop-file-validate's 'warning: key "Encoding" in group "Desktop Entry" is deprecated'
+
+  + Olivier Blin <oblin@mandriva.com>
+    - restore BuildRoot
+
+* Fri Jul 20 2007 Adam Williamson <awilliamson@mandriva.org> 2.4.1-6mdv2008.0
++ Revision: 53993
+- rebuild against new lesstif
+- XDG menu
+
+
+* Thu Dec 21 2006 Crispin Boylan <crisb@mandriva.org> 2.4.1-5mdv2007.0
++ Revision: 101000
+- Try again to build
+- New revision
+- Fix build on x86_64
+- Install in /usr/bin
+- Add BuildReq on libXm
+- Clean spec file, remove unnecessary deps
+- Import viewmol
+
+* Tue Dec 07 2004 Michael Scherer <misc@mandrake.org> 2.4.1-2mdk
+- Rebuild for new python
+
+* Wed Nov 17 2004 Lenny Cartier <lenny@mandrakesoft.com> 2.4.1-1mdk
+- 2.4.1
 
