@@ -1,7 +1,7 @@
 Summary: 	Molecule viewer and editor
 Name: 		viewmol
 Version: 	2.4.1
-Release: 	13
+Release: 	14
 License: 	GPLv2
 Group: 		Sciences/Chemistry
 URL: 		http://viewmol.sourceforge.net
