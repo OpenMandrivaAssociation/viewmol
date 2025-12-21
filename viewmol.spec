@@ -8,6 +8,7 @@ URL: 		https://viewmol.sourceforge.net
 Source0: 	%name-%version.src.tar.bz2
 Patch0:		viewmol-2.4.1-prevent-app-defaults-file-install.patch
 Patch1:		viewmol-2.4.1-mdv-fix-str-fmt.patch
+BuildRequires:	make
 BuildRequires: 	libtiff-devel mesaglu-devel
 BuildRequires: 	x11-proto-devel libxt-devel libxi-devel libxmu-devel
 BuildRequires:  lesstif-devel png-devel
